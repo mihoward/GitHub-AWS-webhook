@@ -1,0 +1,24 @@
+{
+  "name": "github-aws-connector",
+  "version": "1.0.0",
+  "description": "demo for showing webhooks in AWS",
+  "main": "handler.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mihoward/GitHub-AWS-webhook.git"
+  },
+  "author": "Mike Howard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mihoward/GitHub-AWS-webhook/issues"
+  },
+  "homepage": "https://github.com/mihoward/GitHub-AWS-webhook#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1629.0"
+  },
+  "devDependencies": {
+  }
+}
