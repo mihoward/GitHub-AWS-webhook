@@ -1,0 +1,52 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: michaelhoward
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: github-aws-connector
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: github-aws-connector
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  environment:
+    GITHB_EVENT_TABLE: ${self:custom.tableName}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:UpdateItem
+            - dynamodb:GetItem
+          Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.tableName}"
+        - Effect: Allow
+          Action: 
+            - ssm:GetParameter
+            - ssm:GetParameters
+            - ssm:GetParametersByPath
+          Resource: "arn:aws:ssm:${self:provider.region}:${aws:accountId}:parameter/*"
+custom:
+  tableName: GithubEvents
+functions:
+  github-webhook:
+    handler: handler.webhookListener
+    events:
+      - httpApi:
+          path: /
+          method: post
+          cors: true
+resources:
+  Resources:
+    GithubEventsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: date
+            AttributeType: S
+        KeySchema:
+          - AttributeName: date
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
